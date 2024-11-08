@@ -1,9 +1,9 @@
-<template>
-  <div>
-    <h1>Курси валют НБУ на сьогодні</h1>
-    <CurrencyList :currencies="store.currencies" />
-  </div>
+<template lang="pug">
+  div
+    h1 Currency Rates
+    CurrencyList(:currencies="store.currencies")
 </template>
+
 
 <script setup>
   import { onMounted } from 'vue';

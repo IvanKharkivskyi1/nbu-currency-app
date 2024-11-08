@@ -1,12 +1,6 @@
-<template>
-    <div class="search-date-container">
-      <input
-        type="search"
-        v-model="searchTerm"
-        placeholder="Шукати валюту..."
-        @input="filterCurrencies"
-      />
-    </div>
+<template lang="pug">
+  div.search-date-container
+    input(type="search" v-model="searchTerm" placeholder="Search currency..." @input="filterCurrencies")
 </template>
   
 <script setup>

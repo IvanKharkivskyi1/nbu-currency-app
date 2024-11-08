@@ -1,8 +1,7 @@
-<template>
-  <div>
-    <h1>Змінені курси валют</h1>
-    <CurrencyList :currencies="editedCurrencies" />
-  </div>
+<template lang="pug">
+  div
+    h1 Changed Rates
+    CurrencyList(:currencies="editedCurrencies")
 </template>
 
 <script setup>

@@ -1,17 +1,14 @@
-<template>
-  <div>
-    <h1>Редагування валюти</h1>
-    <div v-if="currency">
-      <h2>{{ currency.txt }} ({{ currency.cc }})</h2>
-      <label for="rate">Курс:</label>
-      <input type="number" v-model="currency.rate" />
-      <button @click="saveCurrency">Зберегти</button>
-      <router-link to="/changed-rates">Назад до змінених курсів</router-link>
-    </div>
-    <div v-else>
-      <p>Завантаження...</p>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    h1 Rate editing
+    div(v-if='currency')
+      h2 {{ currency.txt }} ({{ currency.cc }})
+      label(for='rate') Rate:
+      input(type='number' v-model='currency.rate')
+      button(@click='saveCurrency') Save
+      router-link(to='/changed-rates') Back to changed rates
+    div(v-else='')
+      p Loading...
 </template>
 
 <script setup>
@@ -39,3 +36,10 @@
     }
   };
 </script>
+
+<style lang="stylus" scoped>
+  button
+    margin 0 10px
+  label
+    margin-right 10px
+</style>

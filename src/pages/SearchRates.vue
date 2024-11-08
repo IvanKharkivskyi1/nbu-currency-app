@@ -1,7 +1,8 @@
 <template lang="pug">
-  div
-    h1 Пошук курсу за датою
-    input(type="date" v-model="selectedDate" @change="fetchByDate")
+  .search-container
+    h1 Searching by date
+    .search-wrap
+      input(type="date" v-model="selectedDate" @change="fetchByDate")
     CurrencyList(:currencies="store.currencies")
 </template>
 
@@ -26,6 +27,11 @@
 </script>
 
 <style lang="stylus" scoped>
- div
-  background lightgreen
+  .search-wrap
+    display flex
+    justify-content flex-end
+    max-width 500px
+  .search-container 
+    > div
+      position: relative;
 </style>

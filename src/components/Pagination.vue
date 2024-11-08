@@ -1,9 +1,8 @@
-<template>
-  <div>
-    <button @click="prevPage" :disabled="currentPage <= 1">Попередня</button>
-    <span>Сторінка {{ currentPage }} з {{ totalPages }}</span>
-    <button @click="nextPage" :disabled="currentPage >= totalPages">Наступна</button>
-  </div>
+<template lang="pug">
+  div
+    button(@click='prevPage' :disabled='currentPage <= 1') Previous
+    span.page-title Page {{ currentPage }} &zcy; {{ totalPages }}
+    button(@click='nextPage' :disabled='currentPage >= totalPages') Next
 </template>
 
 <script setup>
@@ -34,3 +33,8 @@
     }
   };
 </script>
+
+<style lang="stylus" scoped>
+  .page-title 
+    padding 0 10px
+</style>

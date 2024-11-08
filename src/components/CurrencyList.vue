@@ -1,27 +1,26 @@
-<template>
-  <div>
-    <CurrencySearch @search="updateSearch" />
-    <ul v-if="filteredCurrencies.length > 0">
-      <li v-for="currency in paginatedCurrencies" :key="currency.r030">
-        <span>{{ currency.txt }} ({{ currency.cc }}): {{ currency.rate }}</span>
-        <router-link :to="`/currency-edit/${currency.r030}`">Редагувати</router-link>
-      </li>
-    </ul>
-    <p v-else>Нічого не знайдено</p>
-    <Pagination
-      v-if="filteredCurrencies.length > 0"
-      :totalItems="filteredCurrencies.length"
-      :itemsPerPage="itemsPerPage"
+<template lang="pug">
+  div
+    CurrencySearch(@search="updateSearch")
+    ul(v-if="filteredCurrencies.length > 0")
+      li(v-for="currency in paginatedCurrencies" :key="currency.r030")
+        router-link(:to="`/currency-edit/${currency.r030}`" class="currency-link")
+          span {{ currency.txt }} ({{ currency.cc }}): {{ currency.rate }}
+    p(v-else) No matching records
+    Pagination(
+      v-if="filteredCurrencies.length > 0" 
+      :totalItems="filteredCurrencies.length" 
+      :itemsPerPage="itemsPerPage" 
       @pageChanged="changePage"
-    />
-  </div>
+    )
 </template>
 
 <script setup>
-  import { ref, computed } from "vue";
-  import CurrencySearch from "./CurrencySearch.vue";
-  import Pagination from "./Pagination.vue";
-  import { defineProps } from "vue";
+  import { ref, computed, onBeforeUnmount } from 'vue';
+  import CurrencySearch from './CurrencySearch.vue';
+  import Pagination from './Pagination.vue';
+  import { defineProps } from 'vue';
+  import { useCurrencyStore } from '../store/currencyStore';
+  import { useRoute } from 'vue-router';
 
   const props = defineProps({
     currencies: {
@@ -30,14 +29,16 @@
     },
   });
 
+  const store = useCurrencyStore();
   const currentPage = ref(1);
   const itemsPerPage = 10;
-  const searchTerm = ref("");
 
   const filteredCurrencies = computed(() => {
-    if (!searchTerm.value) return props.currencies;
-    return props.currencies.filter((currency) =>
-      currency.txt.toLowerCase().includes(searchTerm.value.toLowerCase())
+    if (!store.searchTerm) return props.currencies;
+
+    return props.currencies.filter(currency =>
+      currency.txt.toLowerCase().includes(store.searchTerm.toLowerCase()) || 
+      currency.cc.toLowerCase().includes(store.searchTerm.toLowerCase())
     );
   });
 
@@ -51,7 +52,12 @@
   };
 
   const updateSearch = (term) => {
-    searchTerm.value = term;
+    store.searchTerm = term;
     currentPage.value = 1;
   };
+
+  const route = useRoute();
+  onBeforeUnmount(() => {
+    store.searchTerm = '';
+  });
 </script>
