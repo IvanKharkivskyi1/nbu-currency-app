@@ -1,21 +1,31 @@
-<template>
-  <div>
-    <h1>Пошук курсу за датою</h1>
-    <input type="date" v-model="selectedDate" @change="fetchByDate" />
-    <CurrencyList :currencies="currencies" />
-  </div>
+<template lang="pug">
+  div
+    h1 Пошук курсу за датою
+    input(type="date" v-model="selectedDate" @change="fetchByDate")
+    CurrencyList(:currencies="store.currencies")
 </template>
-  
+
 <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import CurrencyList from '../components/CurrencyList.vue';
   import { useCurrencyStore } from '../store/currencyStore';
-  
+
   const store = useCurrencyStore();
-  const selectedDate = ref(store.date);
-  
+  const selectedDate = ref(localStorage.getItem('selectedDate') || store.date);
+
   const fetchByDate = () => {
     store.fetchCurrencies(selectedDate.value);
+    localStorage.setItem('selectedDate', selectedDate.value);
   };
+
+  onMounted(() => {
+    if (selectedDate.value) {
+      store.fetchCurrencies(selectedDate.value);
+    }
+  });
 </script>
-  
+
+<style lang="stylus" scoped>
+ div
+  background lightgreen
+</style>

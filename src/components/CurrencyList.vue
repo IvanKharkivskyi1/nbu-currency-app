@@ -1,39 +1,57 @@
 <template>
-    <div>
-      <ul v-if="paginatedCurrencies.length">
-        <li v-for="currency in paginatedCurrencies" :key="currency.r030">
-          <span @click="editCurrency(currency)" style="cursor: pointer;">
-            {{ currency.txt }} ({{ currency.cc }}): {{ currency.rate }}
-          </span>
-        </li>
-      </ul>
-      <p v-else>Немає доступних даних для відображення.</p>
-      <Pagination :totalItems="currencies.length" :itemsPerPage="10" @pageChanged="changePage" />
-    </div>
+  <div>
+    <CurrencySearch @search="updateSearch" />
+    <ul v-if="filteredCurrencies.length > 0">
+      <li v-for="currency in paginatedCurrencies" :key="currency.r030">
+        <span>{{ currency.txt }} ({{ currency.cc }}): {{ currency.rate }}</span>
+        <router-link :to="`/currency-edit/${currency.r030}`">Редагувати</router-link>
+      </li>
+    </ul>
+    <p v-else>Нічого не знайдено</p>
+    <Pagination
+      v-if="filteredCurrencies.length > 0"
+      :totalItems="filteredCurrencies.length"
+      :itemsPerPage="itemsPerPage"
+      @pageChanged="changePage"
+    />
+  </div>
 </template>
-  
-<script setup>
-  import { computed, ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useCurrencyStore } from '../store/currencyStore';
-  import Pagination from './Pagination.vue';
-  
-  const store = useCurrencyStore();
-  const router = useRouter();
-  const currentPage = ref(1);
-  const currencies = computed(() => store.editedCurrencies.length ? store.editedCurrencies : store.currencies);
 
-  const paginatedCurrencies = computed(() => {
-    const start = (currentPage.value - 1) * 10;
-    return currencies.value.slice(start, start + 10);
+<script setup>
+  import { ref, computed } from "vue";
+  import CurrencySearch from "./CurrencySearch.vue";
+  import Pagination from "./Pagination.vue";
+  import { defineProps } from "vue";
+
+  const props = defineProps({
+    currencies: {
+      type: Array,
+      required: true,
+    },
   });
 
-  const changePage = (page) => {
-    currentPage.value = page;
+  const currentPage = ref(1);
+  const itemsPerPage = 10;
+  const searchTerm = ref("");
+
+  const filteredCurrencies = computed(() => {
+    if (!searchTerm.value) return props.currencies;
+    return props.currencies.filter((currency) =>
+      currency.txt.toLowerCase().includes(searchTerm.value.toLowerCase())
+    );
+  });
+
+  const paginatedCurrencies = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    return filteredCurrencies.value.slice(start, start + itemsPerPage);
+  });
+
+  const changePage = (newPage) => {
+    currentPage.value = newPage;
   };
 
-  const editCurrency = (currency) => {
-    router.push(`/currency-edit/${currency.r030}`);
+  const updateSearch = (term) => {
+    searchTerm.value = term;
+    currentPage.value = 1;
   };
 </script>
-  

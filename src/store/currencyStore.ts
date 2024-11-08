@@ -11,7 +11,7 @@ interface Currency {
 export const useCurrencyStore = defineStore('currency', {
   state: () => ({
     currencies: [] as Currency[],
-    editedCurrencies: [] as Currency[],
+    editedCurrencies: JSON.parse(localStorage.getItem('editedCurrencies') || '[]') as Currency[],
     date: new Date().toISOString().split('T')[0],
   }),
   actions: {
@@ -33,6 +33,14 @@ export const useCurrencyStore = defineStore('currency', {
       } else {
         this.editedCurrencies[index] = currency;
       }
+      this.saveEditedCurrencies();
+    },
+    resetEditedCurrencies() {
+      this.editedCurrencies = [];
+      localStorage.removeItem('editedCurrencies');
+    },
+    saveEditedCurrencies() {
+      localStorage.setItem('editedCurrencies', JSON.stringify(this.editedCurrencies));
     },
   },
 });

@@ -8,7 +8,7 @@ const routes = [
   { path: '/', component: Home },
   { path: '/changed-rates', component: ChangedRates },
   { path: '/search-rates', component: SearchRates },
-  { path: '/currency-edit/:id', component: CurrencyEdit, props: true }, // Додаємо маршрут для редагування
+  { path: '/currency-edit/:id', component: CurrencyEdit, props: true },
 ];
 
 const router = createRouter({
